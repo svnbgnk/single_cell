@@ -1,0 +1,12 @@
+# Extract Reads Mapping to Annotated regions (protein_coding_genes)
+# When extracting illumina reads (possorted_genome_bam.bam) reads mapping adjacent sequence are also considered since they could originated from alternative transcripts
+./slurm_extract.sh pass_reads.bam possorted_genome_bam.bam protein_coding_genes.gtf extracted_reads 1
+
+
+# Assign barcodes to nanopore reads mapping to x - y region. CellBarcodes is a while list of accepted CellBarcodes seperated by newlines. 
+sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part1_ 0 6000 ../CellBarcodes
+
+sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part2_ 6001 14000 ../CellBarcodes
+
+sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part3_ 13001 19810 ../CellBarcodes
+~ 
