@@ -9,4 +9,8 @@ sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part1_ 0 6000 ../C
 sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part2_ 6001 14000 ../CellBarcodes
 
 sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part3_ 13001 19810 ../CellBarcodes
-~ 
+
+
+sbatch /scratch/sboenigk/executables/single_cell_scripts_exe/slurm_divide_alignCBC_only.sh ../extracted_reads/reads FC1_part1 0 8000 ../../CellBarcodes
+
+sbatch /scratch/sboenigk/executables/single_cell_scripts_exe/slurm_divide_alignCBC_only.sh ../extracted_reads/reads FC1_part2 8001 19810 ../../CellBarcodes~ 
