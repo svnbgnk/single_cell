@@ -97,28 +97,28 @@ for (( i=$st; i <= $end; i++)); do
   rm $CBC_TMP_CELL
   
   # remove cDna from nanoporereads using the alignment file
-  /scratch/sboenigk/executables/single_cell_scripts_exe/removecDNA -b $namenano -o $NO_CDNA
+  executables/removecDNA -b $namenano -o $NO_CDNA
 
   # cut off P1 primer in both strand directions
-  /scratch/sboenigk/executables/lastest_flexbar/flexbar -r $NO_CDNA -t "${tdir}/P1" -as "CTACACGACGCTCTTCCGATCT" -n 40 -g -at ANY -ac ON -ao 20 -l ALL -ag -1 -ai -2 -ae 0.15
+  executables/flexbar -r $NO_CDNA -t "${tdir}/P1" -as "CTACACGACGCTCTTCCGATCT" -n 40 -g -at ANY -ac ON -ao 20 -l ALL -ag -1 -ai -2 -ae 0.15
 
   cat ${tdir}/P1.log >> $P1_log 
 
   #split reads according to their direction
-  /scratch/sboenigk/executables/single_cell_scripts_exe/splitReads -f "${tdir}/P1.fasta" -o "${tdir}/P1_split" -c -l 25
+  executables/splitReads -f "${tdir}/P1.fasta" -o "${tdir}/P1_split" -c -l 25
 
   echo "$namechrom"
   date
   sizel=$(wc -l "${tdir}/P1_split_left_tail_trimmed.fasta" | cut -d " " -f 1)
   echo "P1_left $sizel"
   if [ $sizel -ne 0 ]; then
-      /scratch/sboenigk/executables/lastest_flexbar/flexbar -r "${tdir}/P1_split_left_tail_trimmed.fasta" -t $LEFT -a $CBC_NAMES -n 40 -N 20 -g -at LTAIL -ao 10 -l ALL -alt -ag -1 -ai -1 -ae 0.24
+      executables/flexbar -r "${tdir}/P1_split_left_tail_trimmed.fasta" -t $LEFT -a $CBC_NAMES -n 40 -N 20 -g -at LTAIL -ao 10 -l ALL -alt -ag -1 -ai -1 -ae 0.24
   fi
   date
   sizer=$(wc -l ${tdir}/P1_split_right_tail_trimmed.fasta | cut -d " " -f 1)
   echo "P1right $sizer"
   if [ $sizer -ne 0 ]; then
-      /scratch/sboenigk/executables/lastest_flexbar/flexbar -r "${tdir}/P1_split_right_tail_trimmed.fasta" -t $RIGHT -a $CBC_NAMES -n 40 -N 20 -g -at RTAIL -ac ONLY -ao 10 -l ALL -alt -ag -1 -ai -1 -ae 0.24
+      executables/flexbar -r "${tdir}/P1_split_right_tail_trimmed.fasta" -t $RIGHT -a $CBC_NAMES -n 40 -N 20 -g -at RTAIL -ac ONLY -ao 10 -l ALL -alt -ag -1 -ai -1 -ae 0.24
   fi
   date
 #  echo "Copied Logs"
