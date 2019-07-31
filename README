@@ -3,14 +3,11 @@
 ./slurm_extract.sh pass_reads.bam possorted_genome_bam.bam protein_coding_genes.gtf extracted_reads 1
 
 
-# Assign barcodes to nanopore reads mapping to x - y region. CellBarcodes is a while list of accepted CellBarcodes seperated by newlines. 
-sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part1_ 0 6000 ../CellBarcodes
+# Assign barcodes (from nanopore reads) from the white list (created by analyis of the sequenced illumina reads) to nanopore reads.
+# The white list contains the accepted barcodes separated by newlines.
 
-sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part2_ 6001 14000 ../CellBarcodes
+# In directory /prj/Niels_Gehring/barcode_assignment/FC1/flexbar3_5_whitelist_only
+sbatch /scratch/sboenigk/executables/single_cell_scripts_exe/slurm_alignCBC_to_whitelist.sh ../extracted_reads_nano.bam ../../CellBarcodes FC1_white_
 
-sbatch ./slurm_divide_alignCBCv6.sh extracted_reads/reads FC1_part3_ 13001 19810 ../CellBarcodes
-
-
-sbatch /scratch/sboenigk/executables/single_cell_scripts_exe/slurm_divide_alignCBC_only.sh ../extracted_reads/reads FC1_part1 0 8000 ../../CellBarcodes
-
-sbatch /scratch/sboenigk/executables/single_cell_scripts_exe/slurm_divide_alignCBC_only.sh ../extracted_reads/reads FC1_part2 8001 19810 ../../CellBarcodes~ 
+# In directory /prj/Niels_Gehring/barcode_assignment/FC2/flexbar3_5_whitelist_only
+sbatch /scratch/sboenigk/executables/single_cell_scripts_exe/slurm_alignCBC_to_whitelist.sh ../extracted_reads_nano.bam ../../CellBarcodes FC2_white_

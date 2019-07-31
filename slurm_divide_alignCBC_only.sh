@@ -6,9 +6,8 @@
 #SBATCH --time=1440:00
 #SBATCH --mem=100000
 
-module load bedtools
 module load samtools
-module load flexbar
+module load flexbar/3.5.0
 
 if [ ! $# == 5 ]; then
   echo "Usage: $0 [Path + Prefix of Nano and Chrom reads] [Output Prefix] [Start][End (number of Files)] [CellBarcodes]"
@@ -98,28 +97,28 @@ for (( i=$st; i <= $end; i++)); do
   rm $CBC_TMP_CELL
   
   # remove cDna from nanoporereads using the alignment file
-  executables/removecDNA -b $namenano -o $NO_CDNA
+  /scratch/sboenigk/executables/single_cell_scripts_exe/removecDNA -b $namenano -o $NO_CDNA
 
   # cut off P1 primer in both strand directions
-  flexbar -r $NO_CDNA -t "${tdir}/P1" -as "CTACACGACGCTCTTCCGATCT" -n 40 -g -ae ANY -ac -ao 20 -l ALL -ag -1 -ai -2 -at 0.15
+  /scratch/sboenigk/executables/lastest_flexbar/flexbar -r $NO_CDNA -t "${tdir}/P1" -as "CTACACGACGCTCTTCCGATCT" -n 40 -g -at ANY -ac ON -ao 20 -l ALL -ag -1 -ai -2 -ae 0.15
 
   cat ${tdir}/P1.log >> $P1_log 
 
   #split reads according to their direction
-  executables/splitReads -f "${tdir}/P1.fasta" -o "${tdir}/P1_split" -l 25
+  /scratch/sboenigk/executables/single_cell_scripts_exe/splitReads -f "${tdir}/P1.fasta" -o "${tdir}/P1_split" -c -l 25
 
   echo "$namechrom"
   date
   sizel=$(wc -l "${tdir}/P1_split_left_tail_trimmed.fasta" | cut -d " " -f 1)
   echo "P1_left $sizel"
   if [ $sizel -ne 0 ]; then
-      executables/flexbar -r "${tdir}/P1_split_left_tail_trimmed.fasta" -t $LEFT -a $CBC_NAMES -n 40 -N 20 -g -ae LTAIL -ao 10 -l ALL -eve -ag -1 -ai -1 -at 0.24
+      /scratch/sboenigk/executables/lastest_flexbar/flexbar -r "${tdir}/P1_split_left_tail_trimmed.fasta" -t $LEFT -a $CBC_NAMES -n 40 -N 20 -g -at LTAIL -ao 10 -l ALL -alt -ag -1 -ai -1 -ae 0.24
   fi
   date
   sizer=$(wc -l ${tdir}/P1_split_right_tail_trimmed.fasta | cut -d " " -f 1)
   echo "P1right $sizer"
   if [ $sizer -ne 0 ]; then
-      executables/flexbar -r "${tdir}/P1_split_right_tail_trimmed.fasta" -t $RIGHT -a $CBC_NAMES -n 40 -N 20 -g -ae RTAIL -ac -ao 10 -l ALL -eve -ag -1 -ai -1 -at 0.24
+      /scratch/sboenigk/executables/lastest_flexbar/flexbar -r "${tdir}/P1_split_right_tail_trimmed.fasta" -t $RIGHT -a $CBC_NAMES -n 40 -N 20 -g -at RTAIL -ac ONLY -ao 10 -l ALL -alt -ag -1 -ai -1 -ae 0.24
   fi
   date
 #  echo "Copied Logs"
@@ -130,5 +129,5 @@ for (( i=$st; i <= $end; i++)); do
   rm $CBC_TMP
   rm $NO_CDNA
 done
-rm $tdir -r
+#rm $tdir -r
 echo "Finished"
